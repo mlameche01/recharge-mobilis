@@ -3,47 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Recharge Mobile 2000 DA</title>
+<title>Paiement Mobile</title>
+
 <style>
-body {font-family: Arial; background:#f4f4f4; text-align:center; padding:20px;}
-.box {max-width:500px; margin:auto; background:white; padding:20px; border-radius:12px;}
-input, button {width:100%; padding:12px; margin-top:10px; border-radius:8px; font-size:16px;}
-button {background:#00a651; color:white; border:none; cursor:pointer;}
-iframe {display:none; margin-top:20px;}
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+    text-align:center;
+    margin:0;
+    padding:20px;
+}
+
+.box{
+    max-width:500px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:16px;
+}
+
+button{
+    margin-top:15px;
+    padding:12px;
+    width:100%;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+    background:#00a651;
+    color:white;
+}
+
+iframe{
+    margin-top:20px;
+    display:none;
+    border-radius:12px;
+}
 </style>
 </head>
+
 <body>
 
 <div class="box">
-<h2>Recharge Mobile 2000 DA</h2>
-<input type="tel" id="phone" placeholder="Numéro Mobilis" required>
-<button onclick="startPayment()">Continuer</button>
+    <h2>Recharge Mobile 2000 DA</h2>
+    <p>Entrez votre numéro Mobilis :</p>
 
-<iframe id="paymentFrame"
-src="https://thirdweb.com/bridge/checkout-widget?chain=137&amount=150&seller=0x540162082f708B9119159C23D64E456078B51Cbb&tokenAddress=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&theme=light"
-height="850px" width="100%" style="border:0;"></iframe>
+    <input type="tel" id="phone" placeholder="Ex: 0550123456" required>
+
+    <button onclick="showPayment()">Continuer vers paiement</button>
+
+    <iframe id="paymentFrame"
+      src="https://thirdweb.com/bridge/checkout-widget?chain=137&amount=150&seller=0x540162082f708B9119159C23D64E456078B51Cbb&tokenAddress=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&theme=light&title=mobile+top++2000+da&image=https%3A%2F%2Fimgs.search.brave.com%2FJbPIpTzj5LvfFkPWKe9_bLcCewdAtMlQ54-ieC7q_jc%2Frs%3Afit%3A500%3A0%3A1%3A0%2Fg%3Ace%2FaHR0cHM6Ly93d3cu%2FbG9nby53aW5lL2Ev%2FbG9nby9Nb2JpbGlz%2FXyhBbGdlcmlhKS9N%2Fb2JpbGlzXyhBbGdl%2FcmlhKS1Mb2dvLndp%2FbmUuc3Zn&buttonLabel=merci+pour+votre+confiance"
+      height="850px"
+      width="100%">
+    </iframe>
 </div>
 
 <script>
-function startPayment() {
+function showPayment(){
     let phone = document.getElementById("phone").value;
-    if(phone.length < 8){ alert("Numéro invalide"); return; }
 
-    // Envoyer le numéro au backend Vercel
-    fetch("https://ton-backend.vercel.app/save", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({phone})
-    }).then(res=>res.json())
-    .then(data=>{
-        if(data.status=="ok"){
-            // Mettre order_id dans le widget
-            document.getElementById("paymentFrame").style.display="block";
-        } else {
-            alert("Erreur sauvegarde");
-        }
-    });
+    if(phone.length < 8){
+        alert("Veuillez entrer un numéro valide.");
+        return;
+    }
+
+    localStorage.setItem("client_phone", phone);
+
+    document.getElementById("paymentFrame").style.display = "block";
 }
 </script>
+
 </body>
 </html>
