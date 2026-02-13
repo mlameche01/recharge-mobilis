@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recharge Mobile 2000 DA</title>
+<style>
+body {font-family: Arial; background:#f4f4f4; text-align:center; padding:20px;}
+.box {max-width:500px; margin:auto; background:white; padding:20px; border-radius:12px;}
+input, button {width:100%; padding:12px; margin-top:10px; border-radius:8px; font-size:16px;}
+button {background:#00a651; color:white; border:none; cursor:pointer;}
+iframe {display:none; margin-top:20px;}
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>Recharge Mobile 2000 DA</h2>
+<input type="tel" id="phone" placeholder="Numéro Mobilis" required>
+<button onclick="startPayment()">Continuer</button>
+
+<iframe id="paymentFrame"
+src="https://thirdweb.com/bridge/checkout-widget?chain=137&amount=150&seller=0x540162082f708B9119159C23D64E456078B51Cbb&tokenAddress=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&theme=light"
+height="850px" width="100%" style="border:0;"></iframe>
+</div>
+
+<script>
+function startPayment() {
+    let phone = document.getElementById("phone").value;
+    if(phone.length < 8){ alert("Numéro invalide"); return; }
+
+    // Envoyer le numéro au backend Vercel
+    fetch("https://ton-backend.vercel.app/save", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({phone})
+    }).then(res=>res.json())
+    .then(data=>{
+        if(data.status=="ok"){
+            // Mettre order_id dans le widget
+            document.getElementById("paymentFrame").style.display="block";
+        } else {
+            alert("Erreur sauvegarde");
+        }
+    });
+}
+</script>
+</body>
+</html>
